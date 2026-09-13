@@ -1,4 +1,4 @@
-package br.com.fiap.tech.challenge._2.adapters.presenter;
+package br.com.fiap.tech.challenge._2.presentation.presenter;
 
 import br.com.fiap.tech.challenge._2.domain.UserType;
 

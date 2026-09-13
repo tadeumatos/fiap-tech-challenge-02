@@ -1,6 +1,6 @@
-package br.com.fiap.tech.challenge._2.adapters.gateway;
+package br.com.fiap.tech.challenge._2.presentation.gateway;
 
-import br.com.fiap.tech.challenge._2.adapters.controller.request.CreateUserTypeRequest;
+import br.com.fiap.tech.challenge._2.presentation.controller.request.CreateUserTypeRequest;
 import br.com.fiap.tech.challenge._2.application.exceptions.NotFoundException;
 import br.com.fiap.tech.challenge._2.application.gateway.UserTypeGateway;
 import br.com.fiap.tech.challenge._2.domain.UserType;

@@ -1,6 +1,6 @@
 package br.com.fiap.tech.challenge._2.application.usecase.usertype.impl;
 
-import br.com.fiap.tech.challenge._2.adapters.controller.request.CreateUserTypeRequest;
+import br.com.fiap.tech.challenge._2.presentation.controller.request.CreateUserTypeRequest;
 import br.com.fiap.tech.challenge._2.application.gateway.UserTypeGateway;
 import br.com.fiap.tech.challenge._2.application.usecase.usertype.UpdateUserTypeUseCase;
 import br.com.fiap.tech.challenge._2.domain.UserType;

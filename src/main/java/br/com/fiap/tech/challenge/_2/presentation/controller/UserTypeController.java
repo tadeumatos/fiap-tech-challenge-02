@@ -1,7 +1,7 @@
-package br.com.fiap.tech.challenge._2.adapters.controller;
+package br.com.fiap.tech.challenge._2.presentation.controller;
 
-import br.com.fiap.tech.challenge._2.adapters.controller.request.CreateUserTypeRequest;
-import br.com.fiap.tech.challenge._2.adapters.presenter.UserTypePresenter;
+import br.com.fiap.tech.challenge._2.presentation.controller.request.CreateUserTypeRequest;
+import br.com.fiap.tech.challenge._2.presentation.presenter.UserTypePresenter;
 import br.com.fiap.tech.challenge._2.application.usecase.usertype.*;
 import br.com.fiap.tech.challenge._2.domain.UserType;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
-package br.com.fiap.tech.challenge._2.adapters.gateway;
+package br.com.fiap.tech.challenge._2.presentation.gateway;
 
-import br.com.fiap.tech.challenge._2.adapters.controller.request.CreateFoodTypeRequest;
+import br.com.fiap.tech.challenge._2.presentation.controller.request.CreateFoodTypeRequest;
 import br.com.fiap.tech.challenge._2.application.exceptions.NotFoundException;
 import br.com.fiap.tech.challenge._2.application.gateway.FoodTypeGateway;
 import br.com.fiap.tech.challenge._2.domain.FoodType;

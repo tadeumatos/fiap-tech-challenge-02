@@ -1,8 +1,8 @@
-package br.com.fiap.tech.challenge._2.adapters.controller;
+package br.com.fiap.tech.challenge._2.presentation.controller;
 
-import br.com.fiap.tech.challenge._2.adapters.controller.request.CreateFoodTypeRequest;
+import br.com.fiap.tech.challenge._2.presentation.controller.request.CreateFoodTypeRequest;
 
-import br.com.fiap.tech.challenge._2.adapters.presenter.FoodTypePresenter;
+import br.com.fiap.tech.challenge._2.presentation.presenter.FoodTypePresenter;
 
 import br.com.fiap.tech.challenge._2.application.usecase.foodtype.*;
 

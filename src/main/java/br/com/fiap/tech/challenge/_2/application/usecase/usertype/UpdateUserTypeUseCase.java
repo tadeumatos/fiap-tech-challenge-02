@@ -1,6 +1,6 @@
 package br.com.fiap.tech.challenge._2.application.usecase.usertype;
 
-import br.com.fiap.tech.challenge._2.adapters.controller.request.CreateUserTypeRequest;
+import br.com.fiap.tech.challenge._2.presentation.controller.request.CreateUserTypeRequest;
 import br.com.fiap.tech.challenge._2.domain.UserType;
 
 import java.util.UUID;
