@@ -30,6 +30,13 @@ public class FoodType {
         this.name = name;
     }
 
+    public static FoodType create(String name) {
+        return new FoodType(
+                UUID.randomUUID(),
+                name
+        );
+    }
+
     void validate()
     {
         if(this.id==null)

@@ -41,6 +41,14 @@ public class UserType {
         this.owner = owner;
     }
 
+    public static UserType create(String name,boolean owner) {
+        return new UserType(
+                UUID.randomUUID(),
+                name,
+                owner
+        );
+    }
+
     private void validation()
     {
       if(this.id==null)

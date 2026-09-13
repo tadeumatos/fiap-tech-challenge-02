@@ -26,6 +26,21 @@ class UserTypeTest {
         assertThat(userType.getName()).isEqualTo(name);
         assertThat(userType.isOwner()).isTrue();
     }
+
+    @Test
+    @DisplayName("Should create a UserType successfully with static method")
+    void shouldCreateUserTypeSuccessfullyWithStaticMethod() {
+        //Arrange
+        String name = "Administrator";
+        boolean owner = true;
+        //Action
+        UserType userType = UserType.create(name,owner);
+        //Assert
+        assertThat(userType).isNotNull();
+        assertThat(userType.getName()).isEqualTo(name);
+        assertThat(userType.isOwner()).isTrue();
+    }
+
     @Test
     @DisplayName("Should create a UserType with owner set to false")
     void shouldCreateUserTypeWithOwnerFalse() {

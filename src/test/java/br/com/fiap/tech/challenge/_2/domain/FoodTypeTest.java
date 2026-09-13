@@ -1,6 +1,7 @@
 package br.com.fiap.tech.challenge._2.domain;
 
 import br.com.fiap.tech.challenge._2.domain.exception.ValidationFieldsException;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +22,18 @@ class FoodTypeTest {
 
         assertThat(foodType.getId()).isEqualTo(id);
         assertThat(foodType.getName()).isEqualTo(name);
+    }
+
+    @Test
+    @DisplayName("Should create a food type successfully with static method")
+    void shouldCreateFoodTypeSuccessfullyWithStaticMethod() {
+        //Arrange
+        String name = "Hamburger";
+        //Action
+        FoodType foodType = FoodType.create(name);
+        //Assert
+        Assertions.assertThat(foodType).isNotNull();
+        Assertions.assertThat(foodType.getName()).isEqualTo(name);
     }
 
     @Test
