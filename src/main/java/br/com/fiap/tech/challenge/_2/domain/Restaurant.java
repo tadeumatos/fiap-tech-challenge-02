@@ -1,6 +1,7 @@
 package br.com.fiap.tech.challenge._2.domain;
 
-import br.com.fiap.tech.challenge._2.domain.exception.ValidationFieldsException;
+import br.com.fiap.tech.challenge._2.exceptions.BusinessException;
+import br.com.fiap.tech.challenge._2.exceptions.ValidationFieldsException;
 
 import java.time.LocalTime;
 import java.util.UUID;
@@ -8,21 +9,32 @@ import java.util.UUID;
 public class Restaurant {
     private UUID id;
     private String name;
+    private String description;
+    private Address address;
+    private String addressNumber;
+    private String addressComplement;
+    private User user;
     private FoodType foodType;
     private LocalTime startTime;
     private LocalTime endTime;
-    private User user;
-    private String description;
 
-    public Restaurant(UUID id, String name, FoodType foodType, LocalTime startTime, LocalTime endTime, User user, String description) {
+    public Restaurant(UUID id, String name, String description,Address address, String addressNumber,String addressComplement,User user,FoodType foodType, LocalTime startTime, LocalTime endTime) {
         this.id = id;
         this.name = name;
+        this.description = description;
+        this.address=address;
+        this.addressNumber=addressNumber;
+        this.addressComplement=addressComplement;
+        this.user = user;
         this.foodType = foodType;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.user = user;
-        this.description = description;
         this.validation();
+    }
+
+    public static Restaurant create(UUID id, String name, String description,Address address, String addressNumber,String addressComplement,User user,FoodType foodType, LocalTime startTime, LocalTime endTime) {
+
+        return new Restaurant(id,name,description,address,addressNumber,addressComplement,user,foodType,startTime,endTime);
     }
 
     public UUID getId() {
@@ -39,6 +51,7 @@ public class Restaurant {
 
     public void setName(String name) {
         this.name = name;
+        this.validation();
     }
 
     public FoodType getFoodType() {
@@ -46,15 +59,20 @@ public class Restaurant {
     }
 
     public void setFoodType(FoodType foodType) {
+
         this.foodType = foodType;
+        this.validation();
     }
+
 
     public LocalTime getStartTime() {
         return startTime;
     }
 
     public void setStartTime(LocalTime startTime) {
+
         this.startTime = startTime;
+        this.validation();
     }
 
     public LocalTime getEndTime() {
@@ -62,7 +80,9 @@ public class Restaurant {
     }
 
     public void setEndTime(LocalTime endTime) {
+
         this.endTime = endTime;
+        this.validation();
     }
 
     public User getUser() {
@@ -70,7 +90,9 @@ public class Restaurant {
     }
 
     public void setUser(User user) {
+
         this.user = user;
+        this.validation();
     }
 
     public String getDescription() {
@@ -78,7 +100,35 @@ public class Restaurant {
     }
 
     public void setDescription(String description) {
+
         this.description = description;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+        this.validation();
+    }
+
+    public String getAddressNumber() {
+        return addressNumber;
+    }
+
+    public void setAddressNumber(String addressNumber) {
+        this.addressNumber = addressNumber;
+        this.validation();
+    }
+
+    public String getAddressComplement() {
+        return addressComplement;
+    }
+
+    public void setAddressComplement(String addressComplement) {
+
+        this.addressComplement = addressComplement;
     }
 
     void validation()
@@ -89,6 +139,15 @@ public class Restaurant {
         if(this.name==null || this.name.trim().isEmpty())
             throw new ValidationFieldsException("The name is required field");
 
+        if(this.user==null)
+            throw new ValidationFieldsException("The user is required field");
+
+        if(this.address==null)
+            throw new ValidationFieldsException("The address is required field");
+
+        if(this.addressNumber==null || this.addressNumber.trim().isEmpty())
+            throw new ValidationFieldsException("The address complement is required field");
+
         if(this.foodType==null)
             throw new ValidationFieldsException("The food type is required field");
 
@@ -98,16 +157,13 @@ public class Restaurant {
         if(this.endTime==null)
             throw new ValidationFieldsException("The end time type is required field");
 
-        if(this.user==null)
-            throw new ValidationFieldsException("The user is required field");
-
         if (this.startTime.isAfter(this.endTime))
-            throw new ValidationFieldsException(
+            throw new BusinessException(
                     "The start time cannot be after the end time"
             );
 
         if(!this.user.getUserType().isOwner())
-            throw new ValidationFieldsException("The user have be owner");
+            throw new BusinessException("The user have be owner");
     }
 
 }

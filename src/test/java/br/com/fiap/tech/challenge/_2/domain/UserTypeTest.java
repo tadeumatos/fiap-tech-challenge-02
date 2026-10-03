@@ -1,145 +1,180 @@
 package br.com.fiap.tech.challenge._2.domain;
 
-import br.com.fiap.tech.challenge._2.domain.exception.ValidationFieldsException;
+import br.com.fiap.tech.challenge._2.exceptions.ValidationFieldsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@DisplayName("User Type Entity Tests")
+import static org.junit.jupiter.api.Assertions.*;
+
 class UserTypeTest {
 
     @Test
-    @DisplayName("Should create a UserType successfully with a valid name")
-    void shouldCreateUserTypeSuccessfully() {
-        //Arrange
-        String name = "Administrator";
+    @DisplayName("Should create UserType successfully with valid data")
+    void shouldCreateUserTypeSuccessfullyWithValidData() {
+        // Arrange
         UUID id = UUID.randomUUID();
-        boolean owner = true;
-        //Action
-        UserType userType = new UserType(id,name, owner);
-        //Assert
-        assertThat(userType).isNotNull();
-        assertThat(userType.getName()).isEqualTo(name);
-        assertThat(userType.isOwner()).isTrue();
+
+        // Action
+        UserType userType = UserType.create( id, "Administrator", true );
+
+        // Assert
+        assertNotNull(userType);
+        assertEquals(id, userType.getId());
+        assertEquals("Administrator", userType.getName());
+        assertTrue(userType.isOwner());
     }
 
     @Test
-    @DisplayName("Should create a UserType successfully with static method")
-    void shouldCreateUserTypeSuccessfullyWithStaticMethod() {
-        //Arrange
-        String name = "Administrator";
-        boolean owner = true;
-        //Action
-        UserType userType = UserType.create(name,owner);
-        //Assert
-        assertThat(userType).isNotNull();
-        assertThat(userType.getName()).isEqualTo(name);
-        assertThat(userType.isOwner()).isTrue();
-    }
-
-    @Test
-    @DisplayName("Should create a UserType with owner set to false")
-    void shouldCreateUserTypeWithOwnerFalse() {
-        //Arrange
-        String name="User";
-        boolean owner=false;
-        //Action
-        UserType userType = new UserType(UUID.randomUUID(),name, owner);
-        //Assert
-        assertThat(userType.getName()).isEqualTo("User");
-        assertThat(userType.isOwner()).isFalse();
-    }
-    @Test
-    @DisplayName("Should throw ValidationFieldsException when name is null")
-    void shouldThrowExceptionWhenNameIsNull() {
-        //Arrange
+    @DisplayName("Should create UserType successfully when owner is false")
+    void shouldCreateUserTypeSuccessfullyWhenOwnerIsFalse() {
+        // Arrange
         UUID id = UUID.randomUUID();
-        String name=null;
-        boolean owner=false;
-        //Action and Assert
-        assertThatThrownBy(() -> new UserType(id,name,owner))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The name is required field");
+
+        // Action
+        UserType userType = UserType.create( id, "Customer", false );
+
+        // Assert
+        assertNotNull(userType);
+        assertEquals(id, userType.getId());
+        assertEquals("Customer", userType.getName());
+        assertFalse(userType.isOwner());
     }
 
     @Test
-    @DisplayName("Should throw ValidationFieldsException when name is empty")
-    void shouldThrowExceptionWhenNameIsEmpty() {
-        //Arrange
-        UUID id = UUID.randomUUID();
-        String name ="";
-        boolean owner=false;
-        //Action and Assert
-        assertThatThrownBy(() -> new UserType(id,name, owner))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The name is required field");
-    }
-
-    @Test
-    @DisplayName("Should throw ValidationFieldsException when name contains only spaces")
-    void shouldThrowExceptionWhenNameContainsOnlySpaces() {
-        //Arrange
-        UUID id = UUID.randomUUID();
-        String name ="   ";
-        boolean owner=false;
-
-        //Action and Assert
-        assertThatThrownBy(() -> new UserType(id,name, owner))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The name is required field");
-    }
-
-    @Test
-    @DisplayName("Should set and get the UserType name")
-    void shouldSetAndGetName() {
-        //Arrange
-        UserType userType = new UserType(UUID.randomUUID(),"Administrator", true);
-        //Action
-        userType.setName("Manager");
-        //Assert
-        assertThat(userType.getName()).isEqualTo("Manager");
-    }
-
-
-    @Test
-    @DisplayName("Should set and get the owner property")
-    void shouldSetAndGetOwner() {
-        //Arrange
-        UserType userType = new UserType(UUID.randomUUID(),"Administrator", true);
-        //Action
-        userType.setOwner(false);
-        //Assert
-        assertThat(userType.isOwner()).isFalse();
-    }
-    @Test
-    @DisplayName("Should set and get id successfully")
-    void shouldSetAndGetId() {
-        //Arrange
-        UUID id = UUID.randomUUID();
-        String name ="Administrator";
-        boolean owner=true;
-        //Action
-        UserType userType = new UserType(id, name,owner);
-        UUID newId = UUID.randomUUID();
-        userType.setId(newId);
-        //Assert
-        assertThat(userType.getId()).isEqualTo(newId);
-    }
-
-    @Test
-    @DisplayName("Should throw ValidationFieldsException when id is null")
+    @DisplayName("Should throw exception when id is null")
     void shouldThrowExceptionWhenIdIsNull() {
-        //Arrange
+        // Arrange
         UUID id = null;
-        String name=null;
-        boolean owner=false;
-        //Action and Assert
-        assertThatThrownBy(() -> new UserType(id,name,owner))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The id is required field");
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> UserType.create( id, "Administrator", true ) );
+
+        // Assert
+        assertEquals( "The id is required field", exception.getMessage() );
     }
+
+    @Test
+    @DisplayName("Should throw exception when name is null")
+    void shouldThrowExceptionWhenNameIsNull() {
+        // Arrange
+        UUID id = UUID.randomUUID();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> UserType.create( id, null, true ) );
+
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when name is blank")
+    void shouldThrowExceptionWhenNameIsBlank() {
+        // Arrange
+        UUID id = UUID.randomUUID();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> UserType.create( id, " ", true ) );
+
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update UserType id successfully")
+    void shouldUpdateUserTypeIdSuccessfully() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+        UUID newId = UUID.randomUUID();
+
+        // Action
+        userType.setId(newId);
+
+        // Assert
+        assertEquals(newId, userType.getId());
+        assertEquals("Administrator", userType.getName());
+        assertTrue(userType.isOwner());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting id to null")
+    void shouldThrowExceptionWhenSettingIdToNull() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> userType.setId(null) );
+
+        // Assert
+        assertEquals( "The id is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update UserType name successfully")
+    void shouldUpdateUserTypeNameSuccessfully() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+
+        // Action
+        userType.setName("Manager");
+
+        // Assert
+        assertEquals("Manager", userType.getName());
+        assertTrue(userType.isOwner());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting name to null")
+    void shouldThrowExceptionWhenSettingNameToNull() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> userType.setName(null) );
+
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting name to blank")
+    void shouldThrowExceptionWhenSettingNameToBlank() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> userType.setName(" ") );
+
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update owner successfully")
+    void shouldUpdateOwnerSuccessfully() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+
+        // Action
+        userType.setOwner(false);
+
+        // Assert
+        assertFalse(userType.isOwner());
+    }
+
+    @Test
+    @DisplayName("Should update owner from false to true successfully")
+    void shouldUpdateOwnerFromFalseToTrueSuccessfully() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Customer", false );
+
+        // Action
+        userType.setOwner(true);
+
+        // Assert
+        assertTrue(userType.isOwner());
+    }
+
 }

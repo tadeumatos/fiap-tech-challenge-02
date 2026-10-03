@@ -3,6 +3,7 @@ package br.com.fiap.tech.challenge._2.application.usecase.usertype.impl;
 import br.com.fiap.tech.challenge._2.application.gateway.UserTypeGateway;
 import br.com.fiap.tech.challenge._2.application.usecase.usertype.GetAllUserTypeUseCase;
 import br.com.fiap.tech.challenge._2.domain.UserType;
+import br.com.fiap.tech.challenge._2.infrastructure.persistence.entities.UserTypeEntity;
 
 import java.util.List;
 

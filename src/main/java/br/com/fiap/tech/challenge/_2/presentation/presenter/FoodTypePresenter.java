@@ -1,31 +1,31 @@
 package br.com.fiap.tech.challenge._2.presentation.presenter;
 
 import br.com.fiap.tech.challenge._2.domain.FoodType;
+import br.com.fiap.tech.challenge._2.presentation.controller.response.FoodTypeResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class FoodTypePresenter {
 
     private FoodTypePresenter() {
     }
 
-    public static FoodTypePresenter.FoodTypeResponse toResponse(FoodType foodType) {
+    public static FoodTypeResponse toResponse(FoodType foodType) {
 
-        return new FoodTypePresenter.FoodTypeResponse(
+        return new FoodTypeResponse(
                 foodType.getId(),
                 foodType.getName()
         );
     }
 
-    public static List<FoodTypePresenter.FoodTypeResponse> toResponseList(List<FoodType> list) {
-        List<FoodTypePresenter.FoodTypeResponse> responseList = new ArrayList<>();
+    public static List<FoodTypeResponse> toResponseList(List<FoodType> list) {
+        List<FoodTypeResponse> responseList = new ArrayList<>();
 
         for (FoodType foodType:list) {
 
             responseList.add(
-                    new FoodTypePresenter.FoodTypeResponse(
+                    new FoodTypeResponse(
                             foodType.getId(),
                             foodType.getName()
                     )
@@ -34,9 +34,4 @@ public class FoodTypePresenter {
         return responseList;
     }
 
-    public record FoodTypeResponse(
-            UUID id,
-            String name
-    ) {
-    }
 }

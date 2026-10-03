@@ -1,274 +1,485 @@
 package br.com.fiap.tech.challenge._2.domain;
 
-import br.com.fiap.tech.challenge._2.domain.exception.ValidationFieldsException;
+import br.com.fiap.tech.challenge._2.exceptions.ValidationFieldsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Menu Entity Tests")
 class MenuTest {
+
     @Test
-    @DisplayName("Should create a menu with the provided data")
-    void shouldCreateMenuWithProvidedData() {
+    @DisplayName("Should create a menu successfully")
+    void shouldCreateMenuSuccessfully() {
         // Arrange
-        UUID id = UUID.randomUUID();
-        String name = "Pizza";
-        String description = "Calabrese pizza";
-        FoodType foodType =  new FoodType(UUID.randomUUID(),"Test");
-        UserType userType = new UserType(UUID.randomUUID(),"Customer Test",true);
+        UUID id = UUID.randomUUID(); Restaurant restaurant = createValidRestaurant();
 
-        User user = new User(UUID.randomUUID(),"Jonh Doe","test@gmail.com",userType);
-
-        Restaurant restaurant = new Restaurant(UUID.randomUUID(),"Restaurant Test",foodType,LocalTime.of(8,0,0), LocalTime.of(23,0,0),user,"Restaurant Test");
-        boolean active = true;
-
-        // Act
-        Menu menu = new Menu(
-                id,
-                name,
-                description,
-                restaurant,
-                active
-        );
+        // Action
+        Menu menu = Menu.create( id, "Feijoada", "Traditional Brazilian feijoada", new BigDecimal("45.90"), false, "feijoada.jpg", restaurant, true );
 
         // Assert
-        assertThat(menu.getId()).isEqualTo(id);
-        assertThat(menu.getName()).isEqualTo(name);
-        assertThat(menu.getDescription()).isEqualTo(description);
-        assertThat(menu.getRestaurant()).isEqualTo(restaurant);
-        assertThat(menu.isActive()).isTrue();
+        assertNotNull(menu);
+        assertEquals(id, menu.getId());
+        assertEquals("Feijoada", menu.getName());
+        assertEquals( "Traditional Brazilian feijoada", menu.getDescription() );
+        assertEquals( new BigDecimal("45.90"), menu.getPrice() );
+        assertFalse(menu.isOnlyLocal());
+        assertEquals("feijoada.jpg", menu.getFoodPhoto());
+        assertEquals(restaurant, menu.getRestaurant());
+        assertTrue(menu.isActive());
     }
 
     @Test
-    @DisplayName("Should update the menu ID")
-    void shouldUpdateMenuId() {
+    @DisplayName("Should create a menu with inactive status")
+    void shouldCreateMenuWithInactiveStatus() {
         // Arrange
-        Menu menu = createMenu();
-        UUID newId = UUID.randomUUID();
+        Restaurant restaurant = createValidRestaurant();
 
-        // Act
-        menu.setId(newId);
+        // Action
+        Menu menu = Menu.create( UUID.randomUUID(), "Pizza", "Traditional pizza", new BigDecimal("50.00"), false, "pizza.jpg", restaurant, false );
 
         // Assert
-        assertThat(menu.getId()).isEqualTo(newId);
+        assertNotNull(menu);
+        assertFalse(menu.isActive());
+
     }
 
     @Test
-    @DisplayName("Should update the menu name")
-    void shouldUpdateMenuName() {
+    @DisplayName("Should create a menu with only local option enabled")
+    void shouldCreateMenuWithOnlyLocalEnabled() {
         // Arrange
-        Menu menu = createMenu();
+        Restaurant restaurant = createValidRestaurant();
 
-        // Act
-        menu.setName("New Name");
+        // Action
+        Menu menu = Menu.create( UUID.randomUUID(), "Pasta", "Fresh pasta", new BigDecimal("35.00"), true, "pasta.jpg", restaurant, true );
 
         // Assert
-        assertThat(menu.getName()).isEqualTo("New Name");
-    }
-
-    @Test
-    @DisplayName("Should update the menu description")
-    void shouldUpdateMenuDescription() {
-        // Arrange
-        Menu menu = createMenu();
-
-        // Act
-        menu.setDescription("New Description");
-
-        // Assert
-        assertThat(menu.getDescription()).isEqualTo("New Description");
-    }
-
-    @Test
-    @DisplayName("Should update the menu restaurant")
-    void shouldUpdateMenuRestaurant() {
-        // Arrange
-        Menu menu = createMenu();
-        Restaurant newRestaurant = createRestaurant();
-
-        // Act
-        menu.setRestaurant(newRestaurant);
-
-        // Assert
-        assertThat(menu.getRestaurant()).isEqualTo(newRestaurant);
-    }
-
-    @Test
-    @DisplayName("Should activate the menu")
-    void shouldActivateMenu() {
-        // Arrange
-        Menu menu = createMenu();
-
-        // Act
-        menu.setActive(true);
-
-        // Assert
-        assertThat(menu.isActive()).isTrue();
-    }
-
-    @Test
-    @DisplayName("Should deactivate the menu")
-    void shouldDeactivateMenu() {
-        // Arrange
-        Menu menu = createMenu();
-
-        // Act
-        menu.setActive(false);
-
-        // Assert
-        assertThat(menu.isActive()).isFalse();
+        assertNotNull(menu);
+        assertTrue(menu.isOnlyLocal());
     }
 
     @Test
     @DisplayName("Should throw exception when id is null")
     void shouldThrowExceptionWhenIdIsNull() {
-        //Arrange
-        UUID id = null;
-        String name = "Pizza";
-        String description = "Calabrese pizza";
-        FoodType foodType =  new FoodType(UUID.randomUUID(),"Test");
-        UserType userType = new UserType(UUID.randomUUID(),"Customer Test",true);
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
 
-        User user = new User(UUID.randomUUID(),"Jonh Doe","test@gmail.com",userType);
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Menu.create( null, "Feijoada", "Traditional Brazilian feijoada", new BigDecimal("45.90"),
+                 false, "feijoada.jpg", restaurant, true ) );
 
-        Restaurant restaurant = new Restaurant(UUID.randomUUID(),"Restaurant Test",foodType,LocalTime.of(8,0,0), LocalTime.of(23,0,0),user,"Restaurant Test");
-        boolean active = true;
-
-        //Action and Assert
-        assertThatThrownBy(() -> new Menu(id, name, description, restaurant,active))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The id is required field");
-    }
-
-    @Test
-    @DisplayName("Should throw exception when description is null")
-    void shouldThrowExceptionWhenDescriptionsNull() {
-        //Arrange
-        UUID id = UUID.randomUUID();
-        String name = "Pizza";
-        String description = null;
-        FoodType foodType =  new FoodType(UUID.randomUUID(),"Test");
-        UserType userType = new UserType(UUID.randomUUID(),"Customer Test",true);
-
-        User user = new User(UUID.randomUUID(),"Jonh Doe","test@gmail.com",userType);
-
-        Restaurant restaurant = new Restaurant(UUID.randomUUID(),"Restaurant Test",foodType,LocalTime.of(8,0,0), LocalTime.of(23,0,0),user,"Restaurant Test");
-        boolean active = true;
-
-        //Action and Assert
-        assertThatThrownBy(() -> new Menu(id, name, description, restaurant,active))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The description is required field");
-    }
-
-    @Test
-    @DisplayName("Should throw exception when description contains only spaces")
-    void shouldThrowExceptionWhenDescriptionContainsOnlySpaces() {
-        //Arrange
-        UUID id = UUID.randomUUID();
-        String name = "Pizza";
-        String description = "    ";
-        FoodType foodType =  new FoodType(UUID.randomUUID(),"Test");
-        UserType userType = new UserType(UUID.randomUUID(),"Customer Test",true);
-
-        User user = new User(UUID.randomUUID(),"Jonh Doe","test@gmail.com",userType);
-
-        Restaurant restaurant = new Restaurant(UUID.randomUUID(),"Restaurant Test",foodType,LocalTime.of(8,0,0), LocalTime.of(23,0,0),user,"Restaurant Test");
-        boolean active = true;
-
-        //Action and Assert
-        assertThatThrownBy(() -> new Menu(id, name, description, restaurant,active))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The description is required field");
+        // Assert
+        assertEquals( "The id is required field", exception.getMessage() );
     }
 
     @Test
     @DisplayName("Should throw exception when name is null")
     void shouldThrowExceptionWhenNameIsNull() {
-        //Arrange
-        UUID id = UUID.randomUUID();
-        String name = null;
-        String description = "Calabrese pizza";
-        FoodType foodType =  new FoodType(UUID.randomUUID(),"Test");
-        UserType userType = new UserType(UUID.randomUUID(),"Customer Test",true);
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
 
-        User user = new User(UUID.randomUUID(),"Jonh Doe","test@gmail.com",userType);
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Menu.create( UUID.randomUUID(), null, "Traditional Brazilian feijoada",
+                                               new BigDecimal("45.90"), false, "feijoada.jpg", restaurant, true ) );
 
-        Restaurant restaurant = new Restaurant(UUID.randomUUID(),"Restaurant Test",foodType,LocalTime.of(8,0,0), LocalTime.of(23,0,0),user,"Restaurant Test");
-        boolean active = true;
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
 
-        //Action and Assert
-        assertThatThrownBy(() -> new Menu(id, name, description, restaurant,active))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The name is required field");
     }
 
     @Test
-    @DisplayName("Should throw exception when name contains only spaces")
-    void shouldThrowExceptionWhenNameContainsOnlySpace() {
-        //Arrange
-        UUID id = UUID.randomUUID();
-        String name = "   ";
-        String description = "Calabrese pizza";
-        FoodType foodType =  new FoodType(UUID.randomUUID(),"Test");
-        UserType userType = new UserType(UUID.randomUUID(),"Customer Test",true);
+    @DisplayName("Should throw exception when name is blank")
+    void shouldThrowExceptionWhenNameIsBlank() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
 
-        User user = new User(UUID.randomUUID(),"Jonh Doe","test@gmail.com",userType);
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Menu.create( UUID.randomUUID(), " ", "Traditional Brazilian feijoada",
+                new BigDecimal("45.90"), false, "feijoada.jpg", restaurant, true ) );
 
-        Restaurant restaurant = new Restaurant(UUID.randomUUID(),"Restaurant Test",foodType,LocalTime.of(8,0,0), LocalTime.of(23,0,0),user,"Restaurant Test");
-        boolean active = true;
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
+    }
 
-        //Action and Assert
-        assertThatThrownBy(() -> new Menu(id, name, description, restaurant,active))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The name is required field");
+    @Test
+    @DisplayName("Should throw exception when description is null")
+    void shouldThrowExceptionWhenDescriptionIsNull() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Menu.create( UUID.randomUUID(), "Feijoada", null, new BigDecimal("45.90"),
+                false, "feijoada.jpg", restaurant, true ) );
+
+        // Assert
+        assertEquals( "The description is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when description is blank")
+    void shouldThrowExceptionWhenDescriptionIsBlank() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Menu.create( UUID.randomUUID(), "Feijoada", " ", new BigDecimal("45.90"),
+                false, "feijoada.jpg", restaurant, true ) );
+
+        // Assert
+        assertEquals( "The description is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when price is null")
+    void shouldThrowExceptionWhenPriceIsNull() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Menu.create( UUID.randomUUID(), "Feijoada", "Traditional Brazilian feijoada",
+                null, false, "feijoada.jpg", restaurant, true ) );
+
+        // Assert
+        assertEquals( "The price is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when price is zero")
+    void shouldThrowExceptionWhenPriceIsZero() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Menu.create( UUID.randomUUID(), "Feijoada", "Traditional Brazilian feijoada", BigDecimal.ZERO,
+                false, "feijoada.jpg", restaurant, true ) );
+
+        // Assert
+        assertEquals( "The price not be < 0", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when price is negative")
+    void shouldThrowExceptionWhenPriceIsNegative() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Menu.create( UUID.randomUUID(), "Feijoada", "Traditional Brazilian feijoada",
+                new BigDecimal("-10.00"), false, "feijoada.jpg", restaurant, true ) );
+
+        // Assert
+        assertEquals( "The price not be < 0", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when food photo is null")
+    void shouldThrowExceptionWhenFoodPhotoIsNull() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Menu.create( UUID.randomUUID(), "Feijoada", "Traditional Brazilian feijoada",
+                new BigDecimal("45.90"), false, null, restaurant, true ) );
+
+        // Assert
+        assertEquals( "The food photo is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when food photo is blank")
+    void shouldThrowExceptionWhenFoodPhotoIsBlank() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Menu.create( UUID.randomUUID(), "Feijoada", "Traditional Brazilian feijoada",
+                new BigDecimal("45.90"), false, " ", restaurant, true ) );
+
+        // Assert
+        assertEquals( "The food photo is required field", exception.getMessage() );
     }
 
     @Test
     @DisplayName("Should throw exception when restaurant is null")
     void shouldThrowExceptionWhenRestaurantIsNull() {
-        //Arrange
-        UUID id = UUID.randomUUID();
-        String name = "Restaurant B2";
-        String description = "Calabrese pizza";
-        boolean active = true;
 
-        //Action and Assert
-        assertThatThrownBy(() -> new Menu(id, name, description, null,active))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The restaurant is required field");
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Menu.create( UUID.randomUUID(), "Feijoada", "Traditional Brazilian feijoada",
+                new BigDecimal("45.90"), false, "feijoada.jpg", null, true ) );
+
+        // Assert
+        assertEquals( "The restaurant is required field", exception.getMessage() );
     }
 
-    private Menu createMenu() {
-        FoodType foodType =  new FoodType(UUID.randomUUID(),"Test");
-        UserType userType = new UserType(UUID.randomUUID(),"Customer Test",true);
+    @Test
+    @DisplayName("Should update menu id successfully")
+    void shouldUpdateMenuIdSuccessfully() {
+        // Arrange
+        Menu menu = createValidMenu();
+        UUID newId = UUID.randomUUID();
 
-        User user = new User(UUID.randomUUID(),"Jonh Doe","test@gmail.com",userType);
+        // Action
+        menu.setId(newId);
 
-       Restaurant restaurant = new Restaurant (UUID.randomUUID(),"Restaurant Test",foodType,LocalTime.of(8,0,0), LocalTime.of(23,0,0),user,"Restaurant Test");
-
-        return new Menu(
-                UUID.randomUUID(),
-                "Pizza",
-                "Calabrese pizza",
-                createRestaurant(),
-                true
-        );
+        // Assert
+        assertEquals(newId, menu.getId());
     }
 
-   private Restaurant createRestaurant()
-   {
-       FoodType foodType =  new FoodType(UUID.randomUUID(),"Test");
-       UserType userType = new UserType(UUID.randomUUID(),"Customer Test",true);
+    @Test
+    @DisplayName("Should throw exception when setting null id")
+    void shouldThrowExceptionWhenSettingNullId() {
+        // Arrange
+        Menu menu = createValidMenu();
 
-       User user = new User(UUID.randomUUID(),"Jonh Doe","test@gmail.com",userType);
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> menu.setId(null) );
 
-       return new Restaurant (UUID.randomUUID(),"Restaurant New Test",foodType,LocalTime.of(8,0,0), LocalTime.of(23,0,0),user,"Restaurant New Test");
+        // Assert
+        assertEquals( "The id is required field", exception.getMessage() );
+    }
 
-   }
+    @Test
+    @DisplayName("Should update menu name successfully")
+    void shouldUpdateMenuNameSuccessfully() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        menu.setName("Updated Feijoada");
+
+        // Assert
+        assertEquals( "Updated Feijoada", menu.getName() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting null name")
+    void shouldThrowExceptionWhenSettingNullName() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> menu.setName(null) );
+
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting blank name")
+    void shouldThrowExceptionWhenSettingBlankName() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> menu.setName(" ") );
+
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update menu description successfully")
+    void shouldUpdateMenuDescriptionSuccessfully() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        menu.setDescription("Updated description");
+
+        // Assert
+        assertEquals( "Updated description", menu.getDescription() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting null description")
+    void shouldThrowExceptionWhenSettingNullDescription() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> menu.setDescription(null) );
+
+        // Assert
+        assertEquals( "The description is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting blank description")
+    void shouldThrowExceptionWhenSettingBlankDescription() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> menu.setDescription(" ") );
+
+        // Assert
+        assertEquals( "The description is required field", exception.getMessage() );
+
+    } @Test
+    @DisplayName("Should update menu price successfully")
+    void shouldUpdateMenuPriceSuccessfully() {
+        // Arrange
+        Menu menu = createValidMenu();
+        BigDecimal newPrice = new BigDecimal("59.90");
+
+        // Action
+        menu.setPrice(newPrice);
+
+        // Assert
+        assertEquals( newPrice, menu.getPrice() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting null price")
+    void shouldThrowExceptionWhenSettingNullPrice() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> menu.setPrice(null) );
+
+        // Assert
+        assertEquals( "The price is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting zero price")
+    void shouldThrowExceptionWhenSettingZeroPrice() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> menu.setPrice(BigDecimal.ZERO) );
+
+        // Assert
+        assertEquals( "The price not be < 0", exception.getMessage() );
+
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting negative price")
+    void shouldThrowExceptionWhenSettingNegativePrice() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> menu.setPrice(new BigDecimal("-5.00")) );
+
+        // Assert
+        assertEquals( "The price not be < 0", exception.getMessage() );
+
+    }
+
+    @Test
+    @DisplayName("Should update food photo successfully")
+    void shouldUpdateFoodPhotoSuccessfully() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        menu.setFoodPhoto("updated-photo.jpg");
+
+        // Assert
+        assertEquals( "updated-photo.jpg", menu.getFoodPhoto() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting null food photo")
+    void shouldThrowExceptionWhenSettingNullFoodPhoto() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> menu.setFoodPhoto(null) );
+
+        // Assert
+        assertEquals( "The food photo is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting blank food photo")
+    void shouldThrowExceptionWhenSettingBlankFoodPhoto() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> menu.setFoodPhoto(" ") );
+
+        // Assert
+        assertEquals( "The food photo is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update restaurant successfully")
+    void shouldUpdateRestaurantSuccessfully() {
+        // Arrange
+        Menu menu = createValidMenu();
+        Restaurant newRestaurant = createValidRestaurant();
+
+        // Action
+        menu.setRestaurant(newRestaurant);
+
+        // Assert
+        assertEquals( newRestaurant, menu.getRestaurant() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting null restaurant")
+    void shouldThrowExceptionWhenSettingNullRestaurant() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> menu.setRestaurant(null) );
+
+        // Assert
+        assertEquals( "The restaurant is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update active status successfully")
+    void shouldUpdateActiveStatusSuccessfully() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        menu.setActive(false);
+
+        // Assert
+        assertFalse(menu.isActive());
+    }
+
+    @Test
+    @DisplayName("Should update only local status successfully")
+    void shouldUpdateOnlyLocalStatusSuccessfully() {
+        // Arrange
+        Menu menu = createValidMenu();
+
+        // Action
+        menu.setOnlyLocal(true);
+
+        // Assert
+        assertTrue(menu.isOnlyLocal());
+    }
+
+    private Menu createValidMenu() {
+
+        return Menu.create( UUID.randomUUID(), "Feijoada", "Traditional Brazilian feijoada", new BigDecimal("45.90"),
+                false, "feijoada.jpg", createValidRestaurant(), true );
+    }
+
+    private Restaurant createValidRestaurant() {
+        Address address = Address.create( UUID.randomUUID(), "Main Street", "Downtown", "Fortaleza", "CE", "60000-000", "Brazil" );
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+        User user = User.create( UUID.randomUUID(), "John Silva", "john@email.com", userType );
+        FoodType foodType = FoodType.create( UUID.randomUUID(), "Brazilian" );
+
+        return Restaurant.create( UUID.randomUUID(), "Brazilian Restaurant", "Traditional Brazilian food", address, "100", "Near the main square",
+                user, foodType, LocalTime.of(11, 0), LocalTime.of(23, 0) );
+    }
+
 }

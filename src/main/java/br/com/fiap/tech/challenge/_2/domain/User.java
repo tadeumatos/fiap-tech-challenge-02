@@ -1,6 +1,6 @@
 package br.com.fiap.tech.challenge._2.domain;
 
-import br.com.fiap.tech.challenge._2.domain.exception.ValidationFieldsException;
+import br.com.fiap.tech.challenge._2.exceptions.ValidationFieldsException;
 
 import java.util.UUID;
 
@@ -18,28 +18,29 @@ public class User {
         this.validation();
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+        this.validation();
+    }
+    public UUID getId() {
+        return id;
     }
 
+    public void setId(UUID id) {
+        this.id = id;
+        this.validation();
+    }
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email){
         this.email = email;
+        this.validation();
     }
 
     public UserType getUserType() {
@@ -48,6 +49,12 @@ public class User {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+        this.validation();
+    }
+
+    public static User create(UUID id,String name,String email, UserType userType) {
+
+        return new User(id,name,email,userType);
     }
 
     private void validation()

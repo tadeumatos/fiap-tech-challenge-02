@@ -1,13 +1,15 @@
 package br.com.fiap.tech.challenge._2.presentation.controller;
 
-import br.com.fiap.tech.challenge._2.presentation.controller.request.CreateFoodTypeRequest;
+import br.com.fiap.tech.challenge._2.domain.FoodType;
+import br.com.fiap.tech.challenge._2.infrastructure.persistence.entities.FoodTypeEntity;
+import br.com.fiap.tech.challenge._2.presentation.controller.request.FoodTypeRequest;
 
+import br.com.fiap.tech.challenge._2.presentation.controller.response.FoodTypeResponse;
 import br.com.fiap.tech.challenge._2.presentation.presenter.FoodTypePresenter;
 
 import br.com.fiap.tech.challenge._2.application.usecase.foodtype.*;
 
-import br.com.fiap.tech.challenge._2.domain.FoodType;
-
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,20 +40,17 @@ public class FoodTypeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public FoodTypePresenter.FoodTypeResponse create(
-            @RequestBody CreateFoodTypeRequest request
+    public FoodTypeResponse create(
+           @Valid @RequestBody FoodTypeRequest request
     ) {
 
-        FoodType foodType = createFoodTypeUseCase.execute(
-                request.name()
-        );
-
+        FoodType foodType = createFoodTypeUseCase.execute(request);
         return FoodTypePresenter.toResponse(foodType);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public FoodTypePresenter.FoodTypeResponse findById(
+    public FoodTypeResponse findById(
             @PathVariable UUID id
     ) {
 
@@ -62,7 +61,7 @@ public class FoodTypeController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public List<FoodTypePresenter.FoodTypeResponse> getAll()
+    public List<FoodTypeResponse> getAll()
     {
         List<FoodType> list = getAllFoodTypeUseCase.execute();
         return FoodTypePresenter.toResponseList(list);
@@ -79,8 +78,8 @@ public class FoodTypeController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public FoodTypePresenter.FoodTypeResponse update( @PathVariable UUID id,
-                                              @RequestBody CreateFoodTypeRequest request
+    public FoodTypeResponse update( @PathVariable UUID id,
+                                 @Valid @RequestBody FoodTypeRequest request
     ) {
 
         FoodType foodType = updateFoodTypeUseCase.execute(id, request);

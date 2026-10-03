@@ -1,9 +1,12 @@
 package br.com.fiap.tech.challenge._2.presentation.controller;
 
-import br.com.fiap.tech.challenge._2.presentation.controller.request.CreateUserTypeRequest;
+import br.com.fiap.tech.challenge._2.domain.UserType;
+import br.com.fiap.tech.challenge._2.infrastructure.persistence.entities.UserTypeEntity;
+import br.com.fiap.tech.challenge._2.presentation.controller.request.UserTypeRequest;
+import br.com.fiap.tech.challenge._2.presentation.controller.response.UserTypeResponse;
 import br.com.fiap.tech.challenge._2.presentation.presenter.UserTypePresenter;
 import br.com.fiap.tech.challenge._2.application.usecase.usertype.*;
-import br.com.fiap.tech.challenge._2.domain.UserType;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,21 +37,19 @@ public class UserTypeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserTypePresenter.UserTypeResponse create(
-            @RequestBody CreateUserTypeRequest request
+    public UserTypeResponse create(
+          @Valid @RequestBody UserTypeRequest request
     ) {
 
-        UserType userType = createUserTypeUseCase.execute(
-                request.name(),
-                request.owner()
-        );
+        UserType userType = createUserTypeUseCase.execute(request);
+
 
         return UserTypePresenter.toResponse(userType);
     }
 
    @GetMapping("/{id}")
    @ResponseStatus(HttpStatus.OK)
-    public UserTypePresenter.UserTypeResponse findById(
+    public UserTypeResponse findById(
            @PathVariable UUID id
     ) {
 
@@ -59,7 +60,7 @@ public class UserTypeController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public List<UserTypePresenter.UserTypeResponse> getAll()
+    public List<UserTypeResponse> getAll()
     {
         List<UserType> list = getAllUserTypeUseCase.execute();
         return UserTypePresenter.toResponseList(list);
@@ -76,8 +77,8 @@ public class UserTypeController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserTypePresenter.UserTypeResponse update( @PathVariable UUID id,
-            @RequestBody CreateUserTypeRequest request
+    public UserTypeResponse update( @PathVariable UUID id,
+          @Valid  @RequestBody UserTypeRequest request
     ) {
 
         UserType userType = updateUserTypeUseCase.execute(id, request);

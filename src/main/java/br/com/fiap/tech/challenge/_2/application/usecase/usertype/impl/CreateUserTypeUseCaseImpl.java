@@ -3,6 +3,8 @@ package br.com.fiap.tech.challenge._2.application.usecase.usertype.impl;
 import br.com.fiap.tech.challenge._2.application.gateway.UserTypeGateway;
 import br.com.fiap.tech.challenge._2.application.usecase.usertype.CreateUserTypeUseCase;
 import br.com.fiap.tech.challenge._2.domain.UserType;
+import br.com.fiap.tech.challenge._2.presentation.controller.request.UserTypeRequest;
+import java.util.UUID;
 
 public class CreateUserTypeUseCaseImpl implements CreateUserTypeUseCase {
     private final UserTypeGateway userTypeGateway;
@@ -12,9 +14,9 @@ public class CreateUserTypeUseCaseImpl implements CreateUserTypeUseCase {
     }
 
     @Override
-    public UserType execute(String name, boolean owner) {
+    public UserType execute(UserTypeRequest request) {
 
-        UserType userType = UserType.create(name, owner);
+        UserType userType = UserType.create(UUID.randomUUID(),request.name(), request.owner());
 
         return userTypeGateway.save(userType);
     }

@@ -1,6 +1,6 @@
 package br.com.fiap.tech.challenge._2.domain;
 
-import br.com.fiap.tech.challenge._2.domain.exception.ValidationFieldsException;
+import br.com.fiap.tech.challenge._2.exceptions.ValidationFieldsException;
 
 import java.util.UUID;
 
@@ -11,9 +11,9 @@ public class UserType {
 
 
     public UserType(UUID id,String name, boolean owner) {
+        this.id=id;
         this.name = name;
         this.owner = owner;
-        this.id = id;
         this.validation();
     }
 
@@ -23,6 +23,7 @@ public class UserType {
 
     public void setId(UUID id) {
         this.id = id;
+        this.validation();
     }
 
     public String getName() {
@@ -31,6 +32,7 @@ public class UserType {
 
     public void setName(String name) {
         this.name = name;
+        this.validation();
     }
 
     public boolean isOwner() {
@@ -41,9 +43,9 @@ public class UserType {
         this.owner = owner;
     }
 
-    public static UserType create(String name,boolean owner) {
+    public static UserType create(UUID id,String name,boolean owner) {
         return new UserType(
-                UUID.randomUUID(),
+                id,
                 name,
                 owner
         );
@@ -51,8 +53,8 @@ public class UserType {
 
     private void validation()
     {
-      if(this.id==null)
-         throw new ValidationFieldsException("The id is required field");
+       if(this.id==null)
+            throw new ValidationFieldsException("The id is required field");
 
       if(this.name==null || this.name.trim().isEmpty())
          throw new ValidationFieldsException("The name is required field");

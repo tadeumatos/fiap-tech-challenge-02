@@ -1,327 +1,521 @@
 package br.com.fiap.tech.challenge._2.domain;
 
-import br.com.fiap.tech.challenge._2.domain.exception.ValidationFieldsException;
+import br.com.fiap.tech.challenge._2.exceptions.BusinessException;
+import br.com.fiap.tech.challenge._2.exceptions.ValidationFieldsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import static org.junit.jupiter.api.Assertions.*;
-@DisplayName("Restaurant Entity Tests")
-class RestaurantTest {
-    private final UUID id = UUID.randomUUID();
-    private final String name = "Pizza Restaurant";
-    private final FoodType foodType = new FoodType(
-            UUID.randomUUID(),
-            "Pizza"
-    );
-    private final UserType userType = new UserType(
-            UUID.randomUUID(),
-            "Owner",
-            true
-    );
-    private final LocalTime startTime = LocalTime.of(18, 0);
-    private final LocalTime endTime = LocalTime.of(23, 0);
-    private final User user = new User(
-            UUID.randomUUID(),
-            "John Doe",
-            "john.doe@email.com",
-            userType
-    );
 
-    private final String description = "Italian restaurant";
+class RestaurantTest {
 
     @Test
-    @DisplayName("Should create restaurant when all fields are valid")
-    void shouldCreateRestaurantWhenAllFieldsAreValid() {
-        var restaurant = new Restaurant(
-                id,
-                name,
-                foodType,
-                startTime,
-                endTime,
-                user,
-                description
-        );
+    @DisplayName("Should create Restaurant successfully with valid data")
+    void shouldCreateRestaurantSuccessfullyWithValidData() {
+        // Arrange
+        UUID id = UUID.randomUUID();
+        Address address = createValidAddress();
+        User user = createOwnerUser();
+        FoodType foodType = createValidFoodType();
 
-        assertThat(restaurant.getId()).isEqualTo(id);
-        assertThat(restaurant.getName()).isEqualTo(name);
-        assertThat(restaurant.getFoodType()).isEqualTo(foodType);
-        assertThat(restaurant.getStartTime()).isEqualTo(startTime);
-        assertThat(restaurant.getEndTime()).isEqualTo(endTime);
-        assertThat(restaurant.getUser()).isEqualTo(user);
-        assertThat(restaurant.getDescription()).isEqualTo(description);
+        // Action
+        Restaurant restaurant = Restaurant.create( id, "Brazilian Restaurant", "Traditional Brazilian food", address, "100", "Near the main square", user, foodType, LocalTime.of(11, 0), LocalTime.of(23, 0) );
+
+        // Assert
+        assertNotNull(restaurant);
+        assertEquals(id, restaurant.getId());
+        assertEquals("Brazilian Restaurant", restaurant.getName());
+        assertEquals( "Traditional Brazilian food", restaurant.getDescription() );
+        assertEquals(address, restaurant.getAddress());
+        assertEquals("100", restaurant.getAddressNumber());
+        assertEquals( "Near the main square", restaurant.getAddressComplement() );
+        assertEquals(user, restaurant.getUser());
+        assertEquals(foodType, restaurant.getFoodType());
+        assertEquals( LocalTime.of(11, 0), restaurant.getStartTime() );
+        assertEquals( LocalTime.of(23, 0), restaurant.getEndTime() );
+    }
+
+    @Test
+    @DisplayName("Should create Restaurant when start time equals end time")
+    void shouldCreateRestaurantWhenStartTimeEqualsEndTime() {
+        // Arrange
+        LocalTime time = LocalTime.of(12, 0);
+
+        // Action
+        Restaurant restaurant = Restaurant.create( UUID.randomUUID(), "Brazilian Restaurant", "Traditional Brazilian food",
+                                createValidAddress(), "100", "Near the main square", createOwnerUser(), createValidFoodType(), time, time );
+
+        // Assert
+        assertNotNull(restaurant);
+        assertEquals(time, restaurant.getStartTime());
+        assertEquals(time, restaurant.getEndTime());
     }
 
     @Test
     @DisplayName("Should throw exception when id is null")
     void shouldThrowExceptionWhenIdIsNull() {
-        assertThatThrownBy(() -> new Restaurant(
-                null,
-                name,
-                foodType,
-                startTime,
-                endTime,
-                user,
-                description
-        ))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The id is required field");
+        // Arrange
+        UUID id = null;
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Restaurant.create( id, "Brazilian Restaurant", "Traditional Brazilian food",
+                                                           createValidAddress(), "100", "Near the main square", createOwnerUser(), createValidFoodType(), LocalTime.of(11, 0), LocalTime.of(23, 0) ) );
+
+        // Assert
+        assertEquals( "The id is required field", exception.getMessage() );
     }
 
     @Test
     @DisplayName("Should throw exception when name is null")
     void shouldThrowExceptionWhenNameIsNull() {
-        assertThatThrownBy(() -> new Restaurant(
-                id,
-                null,
-                foodType,
-                startTime,
-                endTime,
-                user,
-                description
-        ))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The name is required field");
+        // Arrange
+        String name = null;
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Restaurant.create( UUID.randomUUID(), name, "Traditional Brazilian food",
+                                                            createValidAddress(), "100", "Near the main square", createOwnerUser(), createValidFoodType(), LocalTime.of(11, 0), LocalTime.of(23, 0) ) );
+
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
     }
 
     @Test
-    @DisplayName("Should throw exception when name is empty")
-    void shouldThrowExceptionWhenNameIsEmpty() {
-        assertThatThrownBy(() -> new Restaurant(
-                id,
-                "",
-                foodType,
-                startTime,
-                endTime,
-                user,
-                description
-        ))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The name is required field");
-    }
+    @DisplayName("Should throw exception when name is blank")
+    void shouldThrowExceptionWhenNameIsBlank() {
+        // Arrange
+        String name = " ";
 
-    @Test
-    @DisplayName("Should throw exception when name contains only spaces")
-    void shouldThrowExceptionWhenNameContainsOnlySpaces() {
-        assertThatThrownBy(() -> new Restaurant(
-                id,
-                "   ",
-                foodType,
-                startTime,
-                endTime,
-                user,
-                description
-        ))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The name is required field");
-    }
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Restaurant.create( UUID.randomUUID(), name, "Traditional Brazilian food",
+                                                           createValidAddress(), "100", "Near the main square", createOwnerUser(), createValidFoodType(),
+                                                           LocalTime.of(11, 0), LocalTime.of(23, 0) ) );
 
-    @Test
-    @DisplayName("Should throw exception when food type is null")
-    void shouldThrowExceptionWhenFoodTypeIsNull() {
-        assertThatThrownBy(() -> new Restaurant(
-                id,
-                name,
-                null,
-                startTime,
-                endTime,
-                user,
-                description
-        ))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The food type is required field");
-    }
-
-    @Test
-    @DisplayName("Should throw exception when start time is null")
-    void shouldThrowExceptionWhenStartTimeIsNull() {
-        assertThatThrownBy(() -> new Restaurant(
-                id,
-                name,
-                foodType,
-                null,
-                endTime,
-                user,
-                description
-        ))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The start time type is required field");
-    }
-
-    @Test
-    @DisplayName("Should throw exception when end time is null")
-    void shouldThrowExceptionWhenEndTimeIsNull() {
-        assertThatThrownBy(() -> new Restaurant(
-                id,
-                name,
-                foodType,
-                startTime,
-                null,
-                user,
-                description
-        ))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The end time type is required field");
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
     }
 
     @Test
     @DisplayName("Should throw exception when user is null")
     void shouldThrowExceptionWhenUserIsNull() {
-        assertThatThrownBy(() -> new Restaurant(
-                id,
-                name,
-                foodType,
-                startTime,
-                endTime,
-                null,
-                description
-        ))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The user is required field");
+        // Arrange
+        User user = null;
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Restaurant.create( UUID.randomUUID(), "Brazilian Restaurant", "Traditional Brazilian food",
+                                                            createValidAddress(), "100", "Near the main square", user, createValidFoodType(), LocalTime.of(11, 0),
+                                                            LocalTime.of(23, 0) ) );
+
+        // Assert
+        assertEquals( "The user is required field", exception.getMessage() );
     }
 
     @Test
-    @DisplayName("Should throw exception when user type is not owner")
-    void shouldThrowExceptionWhenUserTypeIsNotOwner() {
-        UserType userTypeTest = new UserType(
-                UUID.randomUUID(),
-                "Customer",
-                false
-        );
+    @DisplayName("Should throw exception when address is null")
+    void shouldThrowExceptionWhenAddressIsNull() {
+        // Arrange
+        Address address = null;
 
-        User userTest = new User(
-                UUID.randomUUID(),
-                "John Doe",
-                "john.doe@email.com",
-                userTypeTest
-        );
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Restaurant.create( UUID.randomUUID(), "Brazilian Restaurant", "Traditional Brazilian food", address,
+                                                                                                        "100", "Near the main square", createOwnerUser(), createValidFoodType(),
+                                                                                                  LocalTime.of(11, 0), LocalTime.of(23, 0) ) );
 
-        assertThatThrownBy(() -> new Restaurant(
-                id,
-                name,
-                foodType,
-                startTime,
-                endTime,
-                userTest,
-                description
-        ))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The user have be owner");
+        // Assert
+        assertEquals( "The address is required field", exception.getMessage() );
     }
 
     @Test
-    @DisplayName("Should update id using setter")
-    void shouldUpdateIdUsingSetter() {
-        var restaurant = createRestaurant();
-        var newId = UUID.randomUUID();
+    @DisplayName("Should throw exception when address number is null")
+    void shouldThrowExceptionWhenAddressNumberIsNull() {
+        // Arrange
+        String addressNumber = null;
 
-        restaurant.setId(newId);
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Restaurant.create( UUID.randomUUID(), "Brazilian Restaurant", "Traditional Brazilian food",
+                                                            createValidAddress(), addressNumber, "Near the main square", createOwnerUser(), createValidFoodType(), LocalTime.of(11, 0), LocalTime.of(23, 0) ) );
 
-        assertThat(restaurant.getId()).isEqualTo(newId);
+        // Assert
+        assertEquals( "The address complement is required field", exception.getMessage() );
     }
 
     @Test
-    @DisplayName("Should update name using setter")
-    void shouldUpdateNameUsingSetter() {
-        var restaurant = createRestaurant();
+    @DisplayName("Should throw exception when address number is blank")
+    void shouldThrowExceptionWhenAddressNumberIsBlank() {
+        // Arrange
+        String addressNumber = " ";
 
-        restaurant.setName("New Restaurant");
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Restaurant.create( UUID.randomUUID(), "Brazilian Restaurant", "Traditional Brazilian food",
+                                                           createValidAddress(), addressNumber, "Near the main square", createOwnerUser(), createValidFoodType(), LocalTime.of(11, 0), LocalTime.of(23, 0) ) );
 
-        assertThat(restaurant.getName()).isEqualTo("New Restaurant");
+        // Assert
+        assertEquals( "The address complement is required field", exception.getMessage() );
     }
 
     @Test
-    @DisplayName("Should update food type using setter")
-    void shouldUpdateFoodTypeUsingSetter() {
-        var restaurant = createRestaurant();
-        var newFoodType = new FoodType(
-                UUID.randomUUID(),
-                "Japanese"
-        );
+    @DisplayName("Should throw exception when food type is null")
+    void shouldThrowExceptionWhenFoodTypeIsNull() {
+        // Arrange
+        FoodType foodType = null;
 
-        restaurant.setFoodType(newFoodType);
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Restaurant.create( UUID.randomUUID(), "Brazilian Restaurant", "Traditional Brazilian food",
+                                                           createValidAddress(), "100", "Near the main square", createOwnerUser(), foodType, LocalTime.of(11, 0), LocalTime.of(23, 0) ) );
 
-        assertThat(restaurant.getFoodType()).isEqualTo(newFoodType);
+        // Assert
+        assertEquals( "The food type is required field", exception.getMessage() );
     }
 
     @Test
-    @DisplayName("Should update start time using setter")
-    void shouldUpdateStartTimeUsingSetter() {
-        var restaurant = createRestaurant();
-        var newStartTime = LocalTime.of(17, 30);
+    @DisplayName("Should throw exception when start time is null")
+    void shouldThrowExceptionWhenStartTimeIsNull() {
+        // Arrange
+        LocalTime startTime = null;
 
-        restaurant.setStartTime(newStartTime);
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Restaurant.create( UUID.randomUUID(), "Brazilian Restaurant", "Traditional Brazilian food",
+                createValidAddress(), "100", "Near the main square", createOwnerUser(), createValidFoodType(), startTime, LocalTime.of(23, 0) ) );
 
-        assertThat(restaurant.getStartTime()).isEqualTo(newStartTime);
+        // Assert
+        assertEquals( "The start time type is required field", exception.getMessage() );
     }
 
     @Test
-    @DisplayName("Should update end time using setter")
-    void shouldUpdateEndTimeUsingSetter() {
-        var restaurant = createRestaurant();
-        var newEndTime = LocalTime.of(22, 30);
+    @DisplayName("Should throw exception when end time is null")
+    void shouldThrowExceptionWhenEndTimeIsNull() {
+        // Arrange
+        LocalTime endTime = null;
 
-        restaurant.setEndTime(newEndTime);
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> Restaurant.create( UUID.randomUUID(), "Brazilian Restaurant", "Traditional Brazilian food",
+                createValidAddress(), "100", "Near the main square", createOwnerUser(), createValidFoodType(), LocalTime.of(11, 0), endTime ) );
 
-        assertThat(restaurant.getEndTime()).isEqualTo(newEndTime);
-    }
-
-    @Test
-    @DisplayName("Should update user using setter")
-    void shouldUpdateUserUsingSetter() {
-        var restaurant = createRestaurant();
-        var newUser = new User(
-                UUID.randomUUID(),
-                "Jane Doe",
-                "jane.doe@email.com",
-                userType
-        );
-
-        restaurant.setUser(newUser);
-
-        assertThat(restaurant.getUser()).isEqualTo(newUser);
-    }
-
-    @Test
-    @DisplayName("Should update description using setter")
-    void shouldUpdateDescriptionUsingSetter() {
-        var restaurant = createRestaurant();
-
-        restaurant.setDescription("New description");
-
-        assertThat(restaurant.getDescription()).isEqualTo("New description");
+        // Assert
+        assertEquals( "The end time type is required field", exception.getMessage() );
     }
 
     @Test
     @DisplayName("Should throw exception when start time is after end time")
     void shouldThrowExceptionWhenStartTimeIsAfterEndTime() {
-        assertThatThrownBy(() -> new Restaurant(
-                id,
-                name,
-                foodType,
-                LocalTime.of(23, 0),
-                LocalTime.of(18, 0),
-                user,
-                description
-        ))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The start time cannot be after the end time");
+        // Arrange
+        LocalTime startTime = LocalTime.of(23, 0);
+        LocalTime endTime = LocalTime.of(11, 0);
+
+        // Action
+        BusinessException exception = assertThrows( BusinessException.class, () -> Restaurant.create( UUID.randomUUID(), "Brazilian Restaurant", "Traditional Brazilian food",
+                createValidAddress(), "100", "Near the main square", createOwnerUser(), createValidFoodType(), startTime, endTime ) );
+
+        // Assert
+        assertEquals( "The start time cannot be after the end time", exception.getMessage() );
     }
 
-    private Restaurant createRestaurant() {
-        return new Restaurant(
-                id,
-                name,
-                foodType,
-                startTime,
-                endTime,
-                user,
-                description
-        );
+    @Test
+    @DisplayName("Should throw exception when user is not an owner")
+    void shouldThrowExceptionWhenUserIsNotAnOwner() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Customer", false );
+        User user = User.create( UUID.randomUUID(), "John Silva", "john@email.com", userType );
+
+        // Action
+        BusinessException exception = assertThrows( BusinessException.class, () -> Restaurant.create( UUID.randomUUID(), "Brazilian Restaurant", "Traditional Brazilian food",
+                createValidAddress(), "100", "Near the main square", user, createValidFoodType(), LocalTime.of(11, 0), LocalTime.of(23, 0) ) );
+
+        // Assert
+        assertEquals( "The user have be owner", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update Restaurant name successfully")
+    void shouldUpdateRestaurantNameSuccessfully() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        restaurant.setName("Updated Restaurant");
+        // Assert
+        assertEquals( "Updated Restaurant", restaurant.getName() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting name to null")
+    void shouldThrowExceptionWhenSettingNameToNull() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> restaurant.setName(null) );
+
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting name to blank")
+    void shouldThrowExceptionWhenSettingNameToBlank() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> restaurant.setName(" ") );
+
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update Restaurant food type successfully")
+    void shouldUpdateRestaurantFoodTypeSuccessfully() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+        FoodType newFoodType = FoodType.create( UUID.randomUUID(), "Italian" );
+
+        // Action
+        restaurant.setFoodType(newFoodType);
+
+        // Assert
+        assertEquals( newFoodType, restaurant.getFoodType() );
+
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting food type to null")
+    void shouldThrowExceptionWhenSettingFoodTypeToNull() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> restaurant.setFoodType(null) );
+
+        // Assert
+        assertEquals( "The food type is required field", exception.getMessage() );
+
+    }
+
+    @Test
+    @DisplayName("Should update Restaurant start time successfully")
+    void shouldUpdateRestaurantStartTimeSuccessfully() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+        LocalTime newStartTime = LocalTime.of(10, 0);
+
+        // Action
+        restaurant.setStartTime(newStartTime);
+
+        // Assert
+        assertEquals( newStartTime, restaurant.getStartTime() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting start time to null")
+    void shouldThrowExceptionWhenSettingStartTimeToNull() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> restaurant.setStartTime(null) );
+
+        // Assert
+        assertEquals( "The start time type is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update Restaurant end time successfully")
+    void shouldUpdateRestaurantEndTimeSuccessfully() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+        LocalTime newEndTime = LocalTime.of(22, 0);
+
+        // Action
+        restaurant.setEndTime(newEndTime);
+
+        // Assert
+        assertEquals( newEndTime, restaurant.getEndTime() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting end time to null")
+    void shouldThrowExceptionWhenSettingEndTimeToNull() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> restaurant.setEndTime(null) );
+
+        // Assert
+        assertEquals( "The end time type is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting start time after end time")
+    void shouldThrowExceptionWhenSettingStartTimeAfterEndTime() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        BusinessException exception = assertThrows( BusinessException.class, () -> restaurant.setStartTime( LocalTime.of(23, 30) ) );
+
+        // Assert
+        assertEquals( "The start time cannot be after the end time", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting end time before start time")
+    void shouldThrowExceptionWhenSettingEndTimeBeforeStartTime() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        BusinessException exception = assertThrows( BusinessException.class, () -> restaurant.setEndTime( LocalTime.of(10, 0) ) );
+
+        // Assert
+        assertEquals( "The start time cannot be after the end time", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update Restaurant user successfully")
+    void shouldUpdateRestaurantUserSuccessfully() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+        User newUser = createOwnerUser();
+
+        // Action
+        restaurant.setUser(newUser);
+
+        // Assert
+        assertEquals( newUser, restaurant.getUser() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting user to null")
+    void shouldThrowExceptionWhenSettingUserToNull() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> restaurant.setUser(null) );
+
+        // Assert
+        assertEquals( "The user is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update Restaurant address successfully")
+    void shouldUpdateRestaurantAddressSuccessfully() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+        Address newAddress = Address.create( UUID.randomUUID(), "New Street", "Aldeota", "Fortaleza", "CE", "60100-000", "Brazil" );
+
+        // Action
+        restaurant.setAddress(newAddress);
+
+        // Assert
+        assertEquals( newAddress, restaurant.getAddress() );
+
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting address to null")
+    void shouldThrowExceptionWhenSettingAddressToNull() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> restaurant.setAddress(null) );
+
+        // Assert
+        assertEquals( "The address is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update Restaurant address number successfully")
+    void shouldUpdateRestaurantAddressNumberSuccessfully() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        restaurant.setAddressNumber("200");
+
+        // Assert
+        assertEquals( "200", restaurant.getAddressNumber() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting address number to null")
+    void shouldThrowExceptionWhenSettingAddressNumberToNull() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> restaurant.setAddressNumber(null) );
+
+        // Assert
+        assertEquals( "The address complement is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update Restaurant description successfully")
+    void shouldUpdateRestaurantDescriptionSuccessfully() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        restaurant.setDescription("New restaurant description");
+
+        // Assert
+        assertEquals( "New restaurant description", restaurant.getDescription() );
+    }
+
+    @Test
+    @DisplayName("Should update Restaurant address complement successfully")
+    void shouldUpdateRestaurantAddressComplementSuccessfully() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+
+        // Action
+        restaurant.setAddressComplement("Apartment 101");
+
+        // Assert
+        assertEquals( "Apartment 101", restaurant.getAddressComplement() );
+    }
+
+    @Test
+    @DisplayName("Should update Restaurant id successfully")
+    void shouldUpdateRestaurantIdSuccessfully() {
+        // Arrange
+        Restaurant restaurant = createValidRestaurant();
+        UUID newId = UUID.randomUUID();
+
+        // Action
+        restaurant.setId(newId);
+
+        // Assert
+        assertEquals( newId, restaurant.getId() );
+    }
+
+    private Restaurant createValidRestaurant() {
+
+        return Restaurant.create( UUID.randomUUID(), "Brazilian Restaurant", "Traditional Brazilian food",
+                                  createValidAddress(), "100", "Near the main square", createOwnerUser(),
+                                  createValidFoodType(), LocalTime.of(11, 0), LocalTime.of(23, 0) );
+    }
+
+    private Address createValidAddress() {
+
+        return Address.create( UUID.randomUUID(), "Main Street", "Downtown", "Fortaleza", "CE", "60000-000", "Brazil" );
+
+    }
+
+    private User createOwnerUser() {
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+
+        return User.create( UUID.randomUUID(), "John Silva", "john@email.com", userType );
+    }
+
+    private FoodType createValidFoodType() {
+        return FoodType.create( UUID.randomUUID(), "Brazilian" );
     }
 }

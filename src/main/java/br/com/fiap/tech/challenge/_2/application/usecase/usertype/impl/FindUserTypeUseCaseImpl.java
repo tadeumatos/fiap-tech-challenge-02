@@ -1,6 +1,6 @@
 package br.com.fiap.tech.challenge._2.application.usecase.usertype.impl;
 
-import br.com.fiap.tech.challenge._2.application.exceptions.NotFoundException;
+import br.com.fiap.tech.challenge._2.exceptions.ResourceNotFoundException;
 import br.com.fiap.tech.challenge._2.application.gateway.UserTypeGateway;
 import br.com.fiap.tech.challenge._2.application.usecase.usertype.FindUserTypeUseCase;
 import br.com.fiap.tech.challenge._2.domain.UserType;
@@ -19,6 +19,6 @@ public class FindUserTypeUseCaseImpl implements FindUserTypeUseCase {
 
         return userTypeGateway.findById(id)
                 .orElseThrow(() ->
-                        new  NotFoundException("User Type not found"));
+                        new ResourceNotFoundException("User Type not found"));
     }
 }

@@ -1,213 +1,259 @@
 package br.com.fiap.tech.challenge._2.domain;
 
-import br.com.fiap.tech.challenge._2.domain.exception.ValidationFieldsException;
+import br.com.fiap.tech.challenge._2.exceptions.ValidationFieldsException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("User Entity Tests")
+
 class UserTest {
 
     @Test
-    @DisplayName("Should create user when all fields are valid")
-    void shouldCreateUserWhenAllFieldsAreValid() {
-        //Arrange
+    @DisplayName("Should create User successfully with valid data")
+    void shouldCreateUserSuccessfullyWithValidData() {
+        // Arrange
         UUID id = UUID.randomUUID();
-        String name = "John Doe";
-        String email = "john.doe@email.com";
-        UserType userType = new UserType(UUID.randomUUID(),"Owner only",true);
-        //Action
-        var user = new User(id, name, email, userType);
-        //Assert
-        assertThat(user.getId()).isEqualTo(id);
-        assertThat(user.getName()).isEqualTo(name);
-        assertThat(user.getEmail()).isEqualTo(email);
-        assertThat(user.getUserType()).isEqualTo(userType);
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+
+        // Action
+        User user = User.create( id, "John Silva", "john@email.com", userType );
+
+        // Assert
+        assertNotNull(user);
+        assertEquals(id, user.getId());
+        assertEquals("John Silva", user.getName());
+        assertEquals("john@email.com", user.getEmail());
+        assertEquals(userType, user.getUserType());
     }
 
     @Test
     @DisplayName("Should throw exception when id is null")
     void shouldThrowExceptionWhenIdIsNull() {
-        //Arrange
+        // Arrange
         UUID id = null;
-        String name = "John Doe";
-        String email = "john.doe@email.com";
-        UserType userType = new UserType(UUID.randomUUID(),"Owner only",true);
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
 
-        //Action and Assert
-        assertThatThrownBy(() -> new User(id, name, email, userType))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The id is required field");
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> User.create( id, "John Silva", "john@email.com", userType ) );
+
+        // Assert
+        assertEquals( "The id is required field", exception.getMessage() );
     }
 
     @Test
     @DisplayName("Should throw exception when name is null")
     void shouldThrowExceptionWhenNameIsNull() {
-        //Arrange
+        // Arrange
         UUID id = UUID.randomUUID();
-        String name = null;
-        String email = "john.doe@email.com";
-        UserType userType = new UserType(UUID.randomUUID(),"Owner only",true);
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
 
-        //Action and Assert
-        assertThatThrownBy(() -> new User(id, name, email, userType))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The name is required field");
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> User.create( id, null, "john@email.com", userType ) );
+
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
     }
 
     @Test
-    @DisplayName("Should throw exception when name is empty")
-    void shouldThrowExceptionWhenNameIsEmpty() {
-        //Arrange
+    @DisplayName("Should throw exception when name is blank")
+    void shouldThrowExceptionWhenNameIsBlank() {
+        // Arrange
         UUID id = UUID.randomUUID();
-        String name = "";
-        String email = "john.doe@email.com";
-        UserType userType = new UserType(UUID.randomUUID(),"Owner only",true);
-        //Action and Assert
-        assertThatThrownBy(() -> new User(id, name, email, userType))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The name is required field");
-    }
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
 
-    @Test
-    @DisplayName("Should throw exception when name contains only spaces")
-    void shouldThrowExceptionWhenNameContainsOnlySpaces() {
-        //Arrange
-        UUID id = UUID.randomUUID();
-        String name = "  ";
-        String email = "john.doe@email.com";
-        UserType userType = new UserType(UUID.randomUUID(),"Owner only",true);
-        //Action and Assert
-        assertThatThrownBy(() -> new User(id, name, email, userType))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The name is required field");
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> User.create( id, " ", "john@email.com", userType ) );
+
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
     }
 
     @Test
     @DisplayName("Should throw exception when email is null")
     void shouldThrowExceptionWhenEmailIsNull() {
-        //Arrange
+        // Arrange
         UUID id = UUID.randomUUID();
-        String name = "John Doe";
-        String email = null;
-        UserType userType = new UserType(UUID.randomUUID(),"Owner only",true);
-        //Action and Assert
-        assertThatThrownBy(() -> new User(id, name, email, userType))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The email is required field");
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> User.create( id, "John Silva", null, userType ) );
+
+        // Assert
+        assertEquals( "The email is required field", exception.getMessage() );
     }
 
     @Test
-    @DisplayName("Should throw exception when email is empty")
-    void shouldThrowExceptionWhenEmailIsEmpty() {
-        //Arrange
+    @DisplayName("Should throw exception when email is blank")
+    void shouldThrowExceptionWhenEmailIsBlank() {
+        // Arrange
         UUID id = UUID.randomUUID();
-        String name = "John Doe";
-        String email = "";
-        UserType userType = new UserType(UUID.randomUUID(),"Owner only",true);
-        //Action and Assert
-        assertThatThrownBy(() -> new User(id, name, email, userType))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The email is required field");
-    }
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
 
-    @Test
-    @DisplayName("Should throw exception when email contains only spaces")
-    void shouldThrowExceptionWhenEmailContainsOnlySpaces() {
-        //Arrange
-        UUID id = UUID.randomUUID();
-        String name = "John Doe";
-        String email = "  ";
-        UserType userType = new UserType(UUID.randomUUID(),"Owner only",true);
-        //Action and Assert
-        assertThatThrownBy(() -> new User(id, name, email, userType))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The email is required field");
+        // Act
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> User.create( id, "John Silva", " ", userType ) );
+
+        // Assert
+        assertEquals( "The email is required field", exception.getMessage() );
     }
 
     @Test
     @DisplayName("Should throw exception when user type is null")
     void shouldThrowExceptionWhenUserTypeIsNull() {
-        //Arrange
+        // Arrange
         UUID id = UUID.randomUUID();
-        String name = "John Doe";
-        String email = "john.doe@email.com";
-        UserType userType = null;
-        //Action and Assert
-        assertThatThrownBy(() -> new User(id, name, email, userType))
-                .isInstanceOf(ValidationFieldsException.class)
-                .hasMessage("The user type is required field");
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> User.create( id, "John Silva", "john@email.com", null ) );
+
+        // Assert
+        assertEquals( "The user type is required field", exception.getMessage() );
     }
 
     @Test
-    @DisplayName("Should update id using setter")
-    void shouldUpdateIdUsingSetter() {
-        //Arrange
-        UUID id = UUID.randomUUID();
-        String name = "John Doe";
-        String email = "john.doe@email.com";
-        UserType userType = new UserType(UUID.randomUUID(),"Owner only",true);
-        //Action
-        var user = new User(id, name, email, userType);
-        var newId = UUID.randomUUID();
+    @DisplayName("Should update User id successfully")
+    void shouldUpdateUserIdSuccessfully() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+        User user = User.create( UUID.randomUUID(), "John Silva", "john@email.com", userType ); UUID newId = UUID.randomUUID();
 
+        // Action
         user.setId(newId);
-        //Assert
-        assertThat(user.getId()).isEqualTo(newId);
+
+        // Assert
+        assertEquals(newId, user.getId());
+        assertEquals("John Silva", user.getName());
+        assertEquals("john@email.com", user.getEmail());
+        assertEquals(userType, user.getUserType());
     }
 
     @Test
-    @DisplayName("Should update name using setter")
-    void shouldUpdateNameUsingSetter() {
-        //Arrange
-        UUID id = UUID.randomUUID();
-        String name = "John Doe";
-        String email = "john.doe@email.com";
-        UserType userType = new UserType(UUID.randomUUID(),"Owner only",true);
-        //Action
-        var user = new User(id, name, email, userType);
+    @DisplayName("Should throw exception when setting id to null")
+    void shouldThrowExceptionWhenSettingIdToNull() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+        User user = User.create( UUID.randomUUID(), "John Silva", "john@email.com", userType );
 
-        user.setName("Jane Doe");
-        //Assert
-        assertThat(user.getName()).isEqualTo("Jane Doe");
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> user.setId(null) );
+
+        // Assert
+        assertEquals( "The id is required field", exception.getMessage() );
     }
 
     @Test
-    @DisplayName("Should update email using setter")
-    void shouldUpdateEmailUsingSetter() {
-        //Arrange
-        UUID id = UUID.randomUUID();
-        String name = "John Doe";
-        String email = "john.doe@email.com";
-        UserType userType = new UserType(UUID.randomUUID(),"Owner only",true);
-        //Action
-        var user = new User(id, name, email, userType);
+    @DisplayName("Should update User name successfully")
+    void shouldUpdateUserNameSuccessfully() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+        User user = User.create( UUID.randomUUID(), "John Silva", "john@email.com", userType );
 
-        user.setEmail("jane.doe@email.com");
-        //Assert
-        assertThat(user.getEmail()).isEqualTo("jane.doe@email.com");
+        // Action
+        user.setName("Michael Silva");
+
+        // Assert
+        assertEquals("Michael Silva", user.getName());
     }
 
     @Test
-    @DisplayName("Should update user type using setter")
-    void shouldUpdateUserTypeUsingSetter() {
-        //Arrange
-        UUID id = UUID.randomUUID();
-        String name = "John Doe";
-        String email = "john.doe@email.com";
-        UserType userType = new UserType(UUID.randomUUID(),"Owner only",true);
-        UserType userTypeTest = new UserType(UUID.randomUUID(),"user only",false);
-        //Action
-        var user = new User(id, name, email, userType);
+    @DisplayName("Should throw exception when setting name to null")
+    void shouldThrowExceptionWhenSettingNameToNull() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+        User user = User.create( UUID.randomUUID(), "John Silva", "john@email.com", userType );
 
-        user.setUserType(userTypeTest);
-        //Assert
-        assertThat(userTypeTest.equals(user.getUserType()));
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> user.setName(null) );
+
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting name to blank")
+    void shouldThrowExceptionWhenSettingNameToBlank() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+        User user = User.create( UUID.randomUUID(), "John Silva", "john@email.com", userType );
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> user.setName(" ") );
+
+        // Assert
+        assertEquals( "The name is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update User email successfully")
+    void shouldUpdateUserEmailSuccessfully() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+        User user = User.create( UUID.randomUUID(), "John Silva", "john@email.com", userType );
+
+        // Action
+        user.setEmail("new.email@email.com");
+
+        // Assert
+        assertEquals( "new.email@email.com", user.getEmail() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting email to null")
+    void shouldThrowExceptionWhenSettingEmailToNull() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+        User user = User.create( UUID.randomUUID(), "John Silva", "john@email.com", userType );
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> user.setEmail(null) );
+
+        // Assert
+        assertEquals( "The email is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting email to blank")
+    void shouldThrowExceptionWhenSettingEmailToBlank() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+        User user = User.create( UUID.randomUUID(), "John Silva", "john@email.com", userType );
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> user.setEmail(" ") );
+
+        // Assert
+        assertEquals( "The email is required field", exception.getMessage() );
+    }
+
+    @Test
+    @DisplayName("Should update User type successfully")
+    void shouldUpdateUserTypeSuccessfully() {
+        // Arrange
+        UserType firstUserType = UserType.create( UUID.randomUUID(), "Administrator", true );
+        UserType secondUserType = UserType.create( UUID.randomUUID(), "Customer", false );
+        User user = User.create( UUID.randomUUID(), "John Silva", "john@email.com", firstUserType );
+
+        // Action
+        user.setUserType(secondUserType);
+
+        // Assert
+        assertEquals(secondUserType, user.getUserType());
+    }
+
+    @Test
+    @DisplayName("Should throw exception when setting user type to null")
+    void shouldThrowExceptionWhenSettingUserTypeToNull() {
+        // Arrange
+        UserType userType = UserType.create( UUID.randomUUID(), "Administrator", true );
+        User user = User.create( UUID.randomUUID(), "John Silva", "john@email.com", userType );
+
+        // Action
+        ValidationFieldsException exception = assertThrows( ValidationFieldsException.class, () -> user.setUserType(null) );
+
+        // Assert
+        assertEquals( "The user type is required field", exception.getMessage() );
     }
 
 }

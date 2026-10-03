@@ -1,15 +1,15 @@
 package br.com.fiap.tech.challenge._2.domain;
 
-import br.com.fiap.tech.challenge._2.domain.exception.ValidationFieldsException;
+import br.com.fiap.tech.challenge._2.exceptions.ValidationFieldsException;
 
 import java.util.UUID;
 
 public class FoodType {
-    UUID id;
-    String name;
+    private UUID id;
+    private String name;
 
-    public FoodType(UUID id, String name) {
-        this.id = id;
+    public FoodType(UUID id,String name) {
+        this.id =id;
         this.name = name;
         this.validate();
     }
@@ -20,6 +20,7 @@ public class FoodType {
 
     public void setId(UUID id) {
         this.id = id;
+        this.validate();
     }
 
     public String getName() {
@@ -27,14 +28,13 @@ public class FoodType {
     }
 
     public void setName(String name) {
+
         this.name = name;
+        this.validate();
     }
 
-    public static FoodType create(String name) {
-        return new FoodType(
-                UUID.randomUUID(),
-                name
-        );
+    public static FoodType create(UUID id,String name) {
+        return new FoodType(id,name);
     }
 
     void validate()

@@ -13,3 +13,14 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+  springdoc:
+    override-with-generic-response: false
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,info
+    endpoint:
+      health:
+        show-details: always
+

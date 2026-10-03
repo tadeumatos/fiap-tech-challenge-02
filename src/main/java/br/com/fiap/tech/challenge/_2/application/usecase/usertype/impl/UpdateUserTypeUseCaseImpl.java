@@ -1,6 +1,7 @@
 package br.com.fiap.tech.challenge._2.application.usecase.usertype.impl;
 
-import br.com.fiap.tech.challenge._2.presentation.controller.request.CreateUserTypeRequest;
+import br.com.fiap.tech.challenge._2.infrastructure.persistence.entities.UserTypeEntity;
+import br.com.fiap.tech.challenge._2.presentation.controller.request.UserTypeRequest;
 import br.com.fiap.tech.challenge._2.application.gateway.UserTypeGateway;
 import br.com.fiap.tech.challenge._2.application.usecase.usertype.UpdateUserTypeUseCase;
 import br.com.fiap.tech.challenge._2.domain.UserType;
@@ -14,8 +15,9 @@ public class UpdateUserTypeUseCaseImpl implements UpdateUserTypeUseCase {
         this.userTypeGateway = userTypeGateway;
     }
     @Override
-    public UserType execute(UUID id, CreateUserTypeRequest createUserTypeRequest) {
+    public UserType execute(UUID id, UserTypeRequest request) {
 
-        return userTypeGateway.update(id,createUserTypeRequest);
+        UserType userType = UserType.create(id,request.name(),request.owner());
+        return userTypeGateway.update(id, userType);
     }
 }
