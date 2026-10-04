@@ -24,7 +24,7 @@ services:
         condition: service_healthy
 
     networks:
-      - db-network
+      - tech-prd-network
 
   postgres:
     container_name: postgresql-tech
@@ -39,7 +39,7 @@ services:
       - "${DB_PORT}:5432"
 
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - tech_prd_data:/var/lib/postgresql/data
 
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_NAME}"]
@@ -49,12 +49,12 @@ services:
       start_period: 10s
 
     networks:
-      - db-network
+      - tech-prd-network
 
 volumes:
-  postgres_data:
+  tech_prd_data:
 
 networks:
-  db-network:
-    name: db-network
+  tech-prd-network:
+    name: tech-prd-network
     driver: bridge

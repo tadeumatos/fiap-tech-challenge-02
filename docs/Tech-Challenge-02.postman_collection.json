@@ -1,0 +1,1107 @@
+{
+  "info": {
+    "_postman_id": "9a7fc0c4-4747-4723-820d-45eb1d1e4b02",
+    "name": "Tech-Challenge-02",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "10236218"
+  },
+  "item": [
+    {
+      "name": "UserTypes",
+      "item": [
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/usertypes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usertypes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/usertypes/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usertypes",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "de37331b-c73b-4a0e-81e0-578d497d66b8"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"userTypeId\", response.id);\r",
+                  "pm.collectionVariables.set(\"userTypeName\", response.name);\r",
+                  "pm.collectionVariables.set(\"userTypeOwner\", response.owner);\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"name\":\"Owner\",\r\n  \"owner\":true\r\n}\r\n ",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/usertypes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usertypes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"name\":\"Customer\",\r\n  \"owner\":false\r\n}\r\n "
+            },
+            "url": {
+              "raw": "{{base_url}}/usertypes/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usertypes",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "38b9c70e-b9de-49fd-b5e1-456a6d763226"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Put",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"name\":\"Customer\",\r\n  \"owner\":false\r\n}\r\n ",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/usertypes/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "usertypes",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "de37331b-c73b-4a0e-81e0-578d497d66b8"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "FoodTypes",
+      "item": [
+        {
+          "name": "GetAll",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"name\":\"Customer 2\",\r\n  \"owner\":false\r\n}\r\n "
+            },
+            "url": {
+              "raw": "{{base_url}}/foodtypes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "foodtypes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"foodTypeId\", response.id);\r",
+                  "pm.collectionVariables.set(\"foodTypeName\", response.name);\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"name\":\"Argentina Food\"\r\n  \r\n}\r\n ",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/foodtypes",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "foodtypes"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FindById",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"name\":\"China Food\"\r\n  \r\n}\r\n "
+            },
+            "url": {
+              "raw": "{{base_url}}/foodtypes/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "foodtypes",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"name\":\"China Food\"\r\n  \r\n}\r\n "
+            },
+            "url": {
+              "raw": "{{base_url}}/foodtypes/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "foodtypes",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1be51336-b72f-4803-b80c-4a6a87851227"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Put",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"Italian Food 22\"\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/foodtypes/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "foodtypes",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "3b218793-4329-4f55-a61f-0c7453cea3ea"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Addresses",
+      "item": [
+        {
+          "name": "Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"addressId\", response.id);\r",
+                  "pm.collectionVariables.set(\"addressName\", response.name);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"name\":\"Rua Tales Nogueira\",\r\n   \"neighborhood\":\"Aldeota\",\r\n   \"city\":\"Fortaleza\",\r\n   \"state\":\"CE\",\r\n   \"postalCode\":\"60357001\",\r\n   \"country\":\"Brazil\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/addresses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "addresses"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetAll",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \"name\":\"Rua Sergio Dias\",\r\n   \"neighborhood\":\"Aldeota\",\r\n   \"city\":\"Fortaleza\",\r\n   \"state\":\"CE\",\r\n   \"postalCode\":\"6000000\",\r\n   \"country\":\"Brazil\"\r\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/addresses",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "addresses"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FindById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/addresses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "addresses",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "91026e2f-efc4-4b33-9c3d-d235104867d4"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/addresses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "addresses",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "0e6c0f39-2a23-487a-a7e4-7a259ff0f528"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Put",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n        \r\n        \"name\": \"Rua Sergio Dias 2\",\r\n        \"neighborhood\": \"Sao Gerardo\",\r\n        \"city\": \"Fortaleza\",\r\n        \"state\": \"CE\",\r\n        \"postalCode\": \"60357000\",\r\n        \"country\": \"Brazil\"\r\n    }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/addresses/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "addresses",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "91026e2f-efc4-4b33-9c3d-d235104867d4"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"userId\", response.id);\r",
+                  "pm.collectionVariables.set(\"userName\", response.name);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"Thiago Barbosa\",\r\n    \"email\":\"thiago.barbosa@gmail.com\",\r\n    \"userTypeId\":\"35d4c537-9b74-4e1d-b398-d7d463075b1f\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "fb38bf4f-7c24-4979-af93-452921dadc79"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "3f32c663-c69c-4f1b-8461-8035f9a7e6e3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Put",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Jose Maia Santiago\",\r\n  \"email\": \"jose.maia@gmail.com\",\r\n  \"userTypeId\": \"11d2498b-e69e-4170-a761-d020d928aee2\"   \r\n}\r\n        \r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/users/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "fb38bf4f-7c24-4979-af93-452921dadc79"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Restaurants",
+      "item": [
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/restaurants",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "restaurants"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"restaurantId\", response.id);\r",
+                  "pm.collectionVariables.set(\"restaurantName\", response.name);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"Restaurante da terra\",\r\n    \"description\":\"Especializado em comida regional\",\r\n    \"addressId\":\"91026e2f-efc4-4b33-9c3d-d235104867d4\",\r\n    \"addressNumber\":1234,\r\n    \"addressComplement\":\"Apto 1044\",\r\n    \"userId\":\"19a16ce1-a538-464f-84da-72c66cac9304\",\r\n    \"foodTypeId\":\"69edfdb3-0669-4728-a71a-0e32661b3669\",\r\n    \"startTime\": \"18:00:00\",\r\n    \"endTime\":\"22:00:00\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/restaurants",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "restaurants"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "FindById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/restaurants/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "restaurants",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "249ff452-0757-4b5f-93ff-3801b4e5d408"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/restaurants/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "restaurants",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "249ff452-0757-4b5f-93ff-3801b4e5d408"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Put",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Restaurante da terra\",\r\n   \"description\": \"Especializado em comida regional\",\r\n   \"addressId\": \"91026e2f-efc4-4b33-9c3d-d235104867d4\",\r\n   \"addressNumber\": \"1200\",\r\n   \"addressComplement\": null,\r\n   \"userId\": \"19a16ce1-a538-464f-84da-72c66cac9304\",\r\n   \"foodTypeId\": \"69edfdb3-0669-4728-a71a-0e32661b3669\",\r\n   \"startTime\": \"20:30:00\",\r\n   \"endTime\": \"22:59:00\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/restaurants/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "restaurants",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "048be2a6-b03e-4a33-b4df-01813abae74c"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Menus",
+      "item": [
+        {
+          "name": "GetAll",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/menus",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "menus"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.collectionVariables.set(\"menuId\", response.id);\r",
+                  "pm.collectionVariables.set(\"menuName\", response.name);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"Peixe com camarao\",\r\n    \"description\":\"Deliciosa peixada\",\r\n    \"price\":190.99,\r\n    \"onlyLocal\":false,\r\n    \"foodPhoto\":\"https://unsplash.com/pt-br/fotografias/maos-inserindo-um-cartao-de-memoria-em-uma-camera-dslr-preta-UKtuLKxjRfk\",\r\n    \"restaurantId\":\"048be2a6-b03e-4a33-b4df-01813abae74c\",\r\n    \"active\":true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/menus",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "menus"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GetById",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/menus/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "menus",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "86723363-181a-423a-8a67-69700960257b"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/menus/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "menus",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "86723363-181a-423a-8a67-69700960257b"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Put",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\":\"Carne Especial\",\r\n    \"description\":\"Deliciosa carne assada\",\r\n    \"price\":150.00,\r\n    \"onlyLocal\":false,\r\n    \"foodPhoto\":\"https://unsplash.com/pt-br/fotografias/maos-inserindo-um-cartao-de-memoria-em-uma-camera-dslr-preta-UKtuLKxjRfk\",\r\n    \"restaurantId\":\"048be2a6-b03e-4a33-b4df-01813abae74c\",\r\n    \"active\":true\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/menus/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "menus",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "5fc9c925-0af2-48ae-a48f-8ce757a8c51b"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": ""
+    }
+  ]
+}
